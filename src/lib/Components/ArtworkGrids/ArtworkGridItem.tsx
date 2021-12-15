@@ -18,6 +18,7 @@ export interface ArtworkProps {
   // If it's not provided, then it will push just the one artwork
   // to the switchboard.
   onPress?: (artworkID: string) => void
+  handleTap?: (artwork: ArtworkGridItem_artwork) => void
   trackingFlow?: string
   contextModule?: string
   // Pass Tap to override generic ing, used for home tracking in rails
@@ -33,6 +34,8 @@ export interface ArtworkProps {
   hideUrgencyTags?: boolean
   // Hide partner name
   hidePartner?: boolean
+  // Hide sale info
+  hideSaleInfo?: boolean
   // Show the lot number (Lot 213)
   showLotLabel?: boolean
   // styles for each field: allows for customization of each field
@@ -58,6 +61,7 @@ export const Artwork: React.FC<ArtworkProps> = ({
   contextScreen,
   hideUrgencyTags = false,
   hidePartner = false,
+  hideSaleInfo = false,
   showLotLabel = false,
   urgencyTagTextStyle,
   lotLabelTextStyle,
@@ -66,6 +70,7 @@ export const Artwork: React.FC<ArtworkProps> = ({
   saleInfoTextStyle,
   partnerNameTextStyle,
   updateRecentSearchesOnTap = false,
+  ...restProps
 }) => {
   const itemRef = useRef<any>()
   const tracking = useTracking()
@@ -95,6 +100,11 @@ export const Artwork: React.FC<ArtworkProps> = ({
   }
 
   const handleTap = () => {
+    if (restProps.handleTap) {
+      restProps.handleTap(artwork)
+      return
+    }
+
     addArtworkToRecentSearches()
     trackArtworkTap()
     onPress && artwork.slug ? onPress(artwork.slug) : navigate(artwork.href!)
@@ -173,7 +183,7 @@ export const Artwork: React.FC<ArtworkProps> = ({
               {artwork.partner.name}
             </Text>
           )}
-          {!!saleInfo && (
+          {!!saleInfo && !hideSaleInfo && (
             <Text lineHeight="18" variant="xs" weight="medium" numberOfLines={1} {...saleInfoTextStyle}>
               {saleInfo}
             </Text>

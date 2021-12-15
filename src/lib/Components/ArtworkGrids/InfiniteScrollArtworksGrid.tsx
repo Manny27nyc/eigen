@@ -17,9 +17,9 @@ import {
   View,
   ViewStyle,
 } from "react-native"
-import { createFragmentContainer, RelayPaginationProp } from "react-relay"
+import { Container, createFragmentContainer, RelayPaginationProp } from "react-relay"
 
-import Artwork from "./ArtworkGridItem"
+import Artwork, { ArtworkProps } from "./ArtworkGridItem"
 
 import { isCloseToBottom } from "lib/utils/isCloseToBottom"
 
@@ -91,6 +91,8 @@ export interface Props {
 
   // Hide Partner name
   hidePartner?: boolean
+
+  ItemComponent?: Container<ArtworkProps>
 
   /** Show Lot Label  */
   showLotLabel?: boolean
@@ -299,7 +301,10 @@ class InfiniteScrollArtworksGrid extends React.Component<Props & PrivateProps, S
       for (let row = 0; row < sectionedArtworks[column].length; row++) {
         const artwork = sectionedArtworks[column][row]
         const itemIndex = row * columnCount + column
-        const ItemComponent = this.props.isMyCollection ? MyCollectionArtworkListItemFragmentContainer : Artwork
+        const ItemComponent = this.props.isMyCollection
+          ? MyCollectionArtworkListItemFragmentContainer
+          : this.props.ItemComponent || Artwork
+
         artworkComponents.push(
           <ItemComponent
             contextScreenOwnerType={this.props.contextScreenOwnerType}

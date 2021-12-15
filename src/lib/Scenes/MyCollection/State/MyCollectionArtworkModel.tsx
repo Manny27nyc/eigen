@@ -3,7 +3,6 @@ import { Action, action, thunk, Thunk } from "easy-peasy"
 import { AutosuggestResult } from "lib/Scenes/Search/AutosuggestResults"
 import { GlobalStoreModel } from "lib/store/GlobalStoreModel"
 import { uniqBy } from "lodash"
-
 import { Metric } from "../Screens/ArtworkForm/Components/Dimensions"
 
 export interface Image {
@@ -69,6 +68,7 @@ export interface MyCollectionArtworkModel {
     artworkErrorOccurred: boolean
   }
   setFormValues: Action<MyCollectionArtworkModel, ArtworkFormValues>
+  updateFormValues: Action<MyCollectionArtworkModel, Partial<ArtworkFormValues>>
   setDirtyFormCheckValues: Action<MyCollectionArtworkModel, ArtworkFormValues>
   resetForm: Action<MyCollectionArtworkModel>
   setArtistSearchResult: Action<MyCollectionArtworkModel, AutosuggestResult | null>
@@ -104,6 +104,10 @@ export const MyCollectionArtworkModel: MyCollectionArtworkModel = {
 
   setFormValues: action((state, input) => {
     state.sessionState.formValues = input
+  }),
+
+  updateFormValues: action((state, input) => {
+    state.sessionState.formValues = { ...state.sessionState.formValues, ...input }
   }),
 
   setDirtyFormCheckValues: action((state, values) => {
