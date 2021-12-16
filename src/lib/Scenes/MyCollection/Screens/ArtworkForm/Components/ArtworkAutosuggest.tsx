@@ -3,12 +3,13 @@ import {
   ArtworkAutosuggestArtworkQueryResponse,
 } from "__generated__/ArtworkAutosuggestArtworkQuery.graphql"
 import { ArtworkGridItem_artwork } from "__generated__/ArtworkGridItem_artwork.graphql"
+import LoadingModal from "lib/Components/Modals/LoadingModal"
 import SearchIcon from "lib/Icons/SearchIcon"
 import { defaultEnvironment } from "lib/relay/createEnvironment"
 import { SearchContext, useSearchProviderValues } from "lib/Scenes/Search/SearchContext"
 import { GlobalStore } from "lib/store/GlobalStore"
 import { pickBy } from "lodash"
-import { Box, Button, Flex, Input } from "palette"
+import { Box, Flex, Input } from "palette"
 import React, { useState } from "react"
 import { fetchQuery, graphql } from "relay-runtime"
 import { useArtworkForm } from "../Form/useArtworkForm"
@@ -26,9 +27,13 @@ export const ArtworkAutosuggest: React.FC<ArtworkAutosuggestProps> = ({ onResult
   const [_artwork, setArtwork] = useState<ArtworkGridItem_artwork | null>(null)
   const [artworkQuery, setArtworkQuery] = useState("")
 
+  const [loading, setLoading] = useState(false)
+
   const artistSlug = artistSearchResult?.slug || ""
 
   const updateForm = async (artworkId: string) => {
+    setLoading(true)
+
     try {
       const artworkData = await fetchArtwork(artworkId)
 
@@ -36,29 +41,17 @@ export const ArtworkAutosuggest: React.FC<ArtworkAutosuggestProps> = ({ onResult
         return
       }
 
-      // const formValues = {
-      //   date: artworkData.date,
-      //   depth: artworkData.depth,
-      //   editionSize: artworkData.editionSize,
-      //   editionNumber: artworkData.editionNumber,
-      //   height: artworkData.height,
-      //   isEdition: artworkData.isEdition,
-      //   category: artworkData.medium,
-      //   medium: artworkData.category,
-      //   metric: artworkData.metric,
-      //   title: artworkData.title,
-      //   width: artworkData.width,
-      // }
-
       const filteredFormValues = pickBy(artworkData, (value) => value !== null)
-
-      console.log({ filteredFormValues })
 
       await GlobalStore.actions.myCollection.artwork.updateFormValues(filteredFormValues)
 
       onResultPress()
     } catch (error) {
       console.error("Couldn't load artwork data", error)
+    } finally {
+      requestAnimationFrame(() => {
+        setLoading(false)
+      })
     }
   }
 
@@ -86,13 +79,11 @@ export const ArtworkAutosuggest: React.FC<ArtworkAutosuggestProps> = ({ onResult
                 updateForm(artworkResult.internalID)
               }}
             />
-
-            <Button variant="outline" onPress={undefined} mt={4}>
-              Don't see your artwork? Skip ahead
-            </Button>
           </Flex>
         )}
       </Box>
+
+      <LoadingModal isVisible={loading} />
     </SearchContext.Provider>
   )
 }

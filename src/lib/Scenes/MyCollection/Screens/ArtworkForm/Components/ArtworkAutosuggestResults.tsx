@@ -10,8 +10,8 @@ import { defaultEnvironment } from "lib/relay/createEnvironment"
 import { renderWithPlaceholder } from "lib/utils/renderWithPlaceholder"
 import { Schema } from "lib/utils/track"
 import { useScreenDimensions } from "lib/utils/useScreenDimensions"
-import { Box, Flex } from "palette"
-import React from "react"
+import { Box, Button, Flex } from "palette"
+import React, { useEffect, useState } from "react"
 import { QueryRenderer } from "react-relay"
 import { createPaginationContainer, graphql, RelayPaginationProp } from "react-relay"
 
@@ -23,6 +23,12 @@ export interface ArtworkAutosuggestResultsProps {
 }
 
 const ArtworkAutosuggestResults: React.FC<ArtworkAutosuggestResultsProps> = ({ viewer, relay, keyword, onPress }) => {
+  const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    setIsLoading(relay.isLoading)
+  }, [relay.isLoading])
+
   const artworksCount = viewer.artworks?.edges?.length
 
   return (
@@ -39,6 +45,11 @@ const ArtworkAutosuggestResults: React.FC<ArtworkAutosuggestResultsProps> = ({ v
           useParentAwareScrollView={false}
           ItemComponent={(props) => <Artwork {...props} hideSaleInfo hidePartner handleTap={onPress} />}
         />
+      )}
+      {!isLoading && (
+        <Button variant="outline" onPress={undefined} mt={3}>
+          Don't see your artwork? Skip ahead
+        </Button>
       )}
     </Box>
   )

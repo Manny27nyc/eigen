@@ -209,11 +209,15 @@ export const MyCollectionArtworkForm: React.FC<MyCollectionArtworkFormProps> = (
 
   const onHeaderBackButtonPress = () => {
     const currentRoute = navContainerRef.current?.getCurrentRoute()
-    if (!currentRoute?.name || currentRoute?.name === "ArtworkFormArtist") {
+    const isFirstScreen = props.mode === "edit" || !currentRoute?.name || currentRoute?.name === "ArtworkFormArtist"
+
+    // clear and exit the form if we're on the first screen
+    if (isFirstScreen) {
       GlobalStore.actions.myCollection.artwork.resetForm()
       goBack()
       return
     }
+
     navContainerRef.current?.goBack()
   }
 
@@ -229,16 +233,20 @@ export const MyCollectionArtworkForm: React.FC<MyCollectionArtworkFormProps> = (
             cardStyle: { backgroundColor: "white" },
           }}
         >
-          <Stack.Screen
-            name="ArtworkFormArtist"
-            component={MyCollectionArtworkFormArtist}
-            initialParams={{ onHeaderBackButtonPress, mode: props.mode }}
-          />
-          <Stack.Screen
-            name="ArtworkFormArtwork"
-            component={MyCollectionArtworkFormArtwork}
-            initialParams={{ onHeaderBackButtonPress }}
-          />
+          {props.mode === "add" && (
+            <Stack.Screen
+              name="ArtworkFormArtist"
+              component={MyCollectionArtworkFormArtist}
+              initialParams={{ onHeaderBackButtonPress, mode: props.mode }}
+            />
+          )}
+          {props.mode === "add" && (
+            <Stack.Screen
+              name="ArtworkFormArtwork"
+              component={MyCollectionArtworkFormArtwork}
+              initialParams={{ onHeaderBackButtonPress }}
+            />
+          )}
           <Stack.Screen
             name="ArtworkFormMain"
             component={MyCollectionArtworkFormMain}

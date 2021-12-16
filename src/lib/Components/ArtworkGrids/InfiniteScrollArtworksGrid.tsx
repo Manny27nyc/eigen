@@ -400,15 +400,17 @@ class InfiniteScrollArtworksGrid extends React.Component<Props & PrivateProps, S
           )}
         </ScrollViewWrapper>
 
-        <Flex
-          alignItems="center"
-          justifyContent="center"
-          p="3"
-          pb="9"
-          style={{ opacity: this.state.isLoading && hasMore() ? 1 : 0 }}
-        >
-          {!!this.props.autoFetch && <ActivityIndicator color={Platform.OS === "android" ? "black" : undefined} />}
-        </Flex>
+        {this.state.isLoading && hasMore() && (
+          <Flex
+            alignItems="center"
+            justifyContent="center"
+            p="3"
+            pb="9"
+            style={{ opacity: this.state.isLoading && hasMore() ? 1 : 0 }}
+          >
+            {!!this.props.autoFetch && <ActivityIndicator color={Platform.OS === "android" ? "black" : undefined} />}
+          </Flex>
+        )}
       </>
     )
   }
