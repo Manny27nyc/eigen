@@ -10,7 +10,7 @@ import { defaultEnvironment } from "lib/relay/createEnvironment"
 import { renderWithPlaceholder } from "lib/utils/renderWithPlaceholder"
 import { Schema } from "lib/utils/track"
 import { useScreenDimensions } from "lib/utils/useScreenDimensions"
-import { Box, Flex, quoteLeft, quoteRight, Text } from "palette"
+import { Box, Flex } from "palette"
 import React from "react"
 import { QueryRenderer } from "react-relay"
 import { createPaginationContainer, graphql, RelayPaginationProp } from "react-relay"
@@ -27,17 +27,7 @@ const ArtworkAutosuggestResults: React.FC<ArtworkAutosuggestResultsProps> = ({ v
 
   return (
     <Box py={2}>
-      {artworksCount === 0 ? (
-        <Box mb="80px" pt={6} px={2}>
-          <Text variant="md" textAlign="center">
-            Sorry, we couldn’t find any Artworks for {quoteLeft}
-            {keyword}.{quoteRight}
-          </Text>
-          <Text variant="md" color="black60" textAlign="center">
-            Please try searching again with a different spelling.
-          </Text>
-        </Box>
-      ) : (
+      {!!artworksCount && (
         <InfiniteScrollArtworksGridContainer
           connection={viewer.artworks!}
           loadMore={relay.loadMore}

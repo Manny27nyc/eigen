@@ -63,7 +63,7 @@ describe("AddEditArtwork", () => {
   it("renders correct components on Add", () => {
     const mockNav = jest.fn()
     const mockRoute: Route<
-      "ArtworkForm",
+      "ArtworkFormMain",
       {
         mode: ArtworkFormMode
         clearForm(): void
@@ -71,8 +71,8 @@ describe("AddEditArtwork", () => {
         onHeaderBackButtonPress(): void
       }
     > = {
-      key: "ArtworkForm",
-      name: "ArtworkForm",
+      key: "ArtworkFormMain",
+      name: "ArtworkFormMain",
       params: {
         mode: "add",
         clearForm: jest.fn(),
@@ -94,7 +94,7 @@ describe("AddEditArtwork", () => {
   it("renders correct components on Edit", () => {
     const mockNav = jest.fn()
     const mockRoute: Route<
-      "ArtworkForm",
+      "ArtworkFormMain",
       {
         mode: ArtworkFormMode
         clearForm(): void
@@ -102,8 +102,8 @@ describe("AddEditArtwork", () => {
         onHeaderBackButtonPress(): void
       }
     > = {
-      key: "ArtworkForm",
-      name: "ArtworkForm",
+      key: "ArtworkFormMain",
+      name: "ArtworkFormMain",
       params: {
         mode: "edit",
         clearForm: jest.fn(),
@@ -123,7 +123,7 @@ describe("AddEditArtwork", () => {
     const mockNav = jest.fn()
     const mockClearForm = jest.fn()
     const mockRoute: Route<
-      "ArtworkForm",
+      "ArtworkFormMain",
       {
         mode: ArtworkFormMode
         clearForm(): void
@@ -131,8 +131,8 @@ describe("AddEditArtwork", () => {
         onHeaderBackButtonPress(): void
       }
     > = {
-      key: "ArtworkForm",
-      name: "ArtworkForm",
+      key: "ArtworkFormMain",
+      name: "ArtworkFormMain",
       params: {
         mode: "edit",
         clearForm: mockClearForm,
@@ -174,7 +174,7 @@ describe("AddEditArtwork", () => {
     }))
     const mockNav = jest.fn()
     const mockRoute: Route<
-      "ArtworkForm",
+      "ArtworkFormMain",
       {
         mode: ArtworkFormMode
         clearForm(): void
@@ -182,8 +182,8 @@ describe("AddEditArtwork", () => {
         onHeaderBackButtonPress(): void
       }
     > = {
-      key: "ArtworkForm",
-      name: "ArtworkForm",
+      key: "ArtworkFormMain",
+      name: "ArtworkFormMain",
       params: {
         mode: "edit",
         clearForm: jest.fn(),
@@ -202,7 +202,7 @@ describe("AddEditArtwork", () => {
     const mockDelete = jest.fn()
     const mockNav = jest.fn()
     const mockRoute: Route<
-      "ArtworkForm",
+      "ArtworkFormMain",
       {
         mode: ArtworkFormMode
         clearForm(): void
@@ -210,8 +210,8 @@ describe("AddEditArtwork", () => {
         onHeaderBackButtonPress(): void
       }
     > = {
-      key: "ArtworkForm",
-      name: "ArtworkForm",
+      key: "ArtworkFormMain",
+      name: "ArtworkFormMain",
       params: {
         mode: "edit",
         clearForm: jest.fn(),

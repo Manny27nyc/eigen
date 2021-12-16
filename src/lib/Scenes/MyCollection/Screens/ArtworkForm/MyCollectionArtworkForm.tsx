@@ -22,6 +22,8 @@ import { refreshMyCollection } from "../../MyCollection"
 import { ArtworkFormValues } from "../../State/MyCollectionArtworkModel"
 import { deletedPhotoIDs } from "../../utils/deletedPhotoIDs"
 import { artworkSchema, validateArtworkSchema } from "./Form/artworkSchema"
+import { MyCollectionArtworkFormArtist } from "./Screens/MyCollectionArtworkFormArtist"
+import { MyCollectionArtworkFormArtwork } from "./Screens/MyCollectionArtworkFormArtwork"
 import { MyCollectionArtworkFormMain } from "./Screens/MyCollectionArtworkFormMain"
 
 export type ArtworkFormMode = "add" | "edit"
@@ -33,16 +35,24 @@ export type ArtworkFormMode = "add" | "edit"
 // The react-navigation folks have written code that relies on the more permissive `type` behaviour.
 // tslint:disable-next-line:interface-over-type-literal
 export type ArtworkFormScreen = {
-  ArtworkForm: {
+  ArtworkFormArtist: {
     mode: ArtworkFormMode
     clearForm(): void
     onDelete?(): void
     onHeaderBackButtonPress(): void
+    onNext(): void
   }
-  AdditionalDetails: {
+  ArtworkFormArtwork: {
+    mode: ArtworkFormMode
+    clearForm(): void
+    onDelete?(): void
     onHeaderBackButtonPress(): void
+    onNext(): void
   }
-  AddPhotos: {
+  ArtworkFormMain: {
+    mode: ArtworkFormMode
+    clearForm(): void
+    onDelete?(): void
     onHeaderBackButtonPress(): void
   }
 }
@@ -199,7 +209,7 @@ export const MyCollectionArtworkForm: React.FC<MyCollectionArtworkFormProps> = (
 
   const onHeaderBackButtonPress = () => {
     const currentRoute = navContainerRef.current?.getCurrentRoute()
-    if (!currentRoute?.name || currentRoute?.name === "ArtworkForm") {
+    if (!currentRoute?.name || currentRoute?.name === "ArtworkFormArtist") {
       GlobalStore.actions.myCollection.artwork.resetForm()
       goBack()
       return
@@ -220,7 +230,17 @@ export const MyCollectionArtworkForm: React.FC<MyCollectionArtworkFormProps> = (
           }}
         >
           <Stack.Screen
-            name="ArtworkForm"
+            name="ArtworkFormArtist"
+            component={MyCollectionArtworkFormArtist}
+            initialParams={{ onHeaderBackButtonPress, mode: props.mode }}
+          />
+          <Stack.Screen
+            name="ArtworkFormArtwork"
+            component={MyCollectionArtworkFormArtwork}
+            initialParams={{ onHeaderBackButtonPress }}
+          />
+          <Stack.Screen
+            name="ArtworkFormMain"
             component={MyCollectionArtworkFormMain}
             initialParams={{ onDelete, clearForm, mode: props.mode, onHeaderBackButtonPress }}
           />

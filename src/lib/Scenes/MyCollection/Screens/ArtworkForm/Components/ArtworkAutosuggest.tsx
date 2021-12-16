@@ -8,24 +8,25 @@ import { defaultEnvironment } from "lib/relay/createEnvironment"
 import { SearchContext, useSearchProviderValues } from "lib/Scenes/Search/SearchContext"
 import { GlobalStore } from "lib/store/GlobalStore"
 import { pickBy } from "lodash"
-import { Box, Button, Flex, Input, Spacer, Text } from "palette"
+import { Box, Button, Flex, Input } from "palette"
 import React, { useState } from "react"
 import { fetchQuery, graphql } from "relay-runtime"
 import { useArtworkForm } from "../Form/useArtworkForm"
 import { ArtworkAutosuggestResultsQueryRenderer } from "./ArtworkAutosuggestResults"
 
-export const ArtworkAutosuggest: React.FC = () => {
+interface ArtworkAutosuggestProps {
+  onResultPress(): void
+}
+
+export const ArtworkAutosuggest: React.FC<ArtworkAutosuggestProps> = ({ onResultPress }) => {
   const { formik } = useArtworkForm()
   const { artist: artistQuery, artistSearchResult } = formik.values
   const searchProviderValues = useSearchProviderValues(artistQuery)
 
-  const [artwork, setArtwork] = useState<ArtworkGridItem_artwork | null>(null)
+  const [_artwork, setArtwork] = useState<ArtworkGridItem_artwork | null>(null)
   const [artworkQuery, setArtworkQuery] = useState("")
-  const [isFocused, setIsFocused] = useState(false)
 
   const artistSlug = artistSearchResult?.slug || ""
-
-  const showArtworkAutosuggestResults = isFocused && artistSlug && artworkQuery.length > 0
 
   const updateForm = async (artworkId: string) => {
     try {
@@ -53,68 +54,46 @@ export const ArtworkAutosuggest: React.FC = () => {
 
       console.log({ filteredFormValues })
 
-      GlobalStore.actions.myCollection.artwork.updateFormValues(filteredFormValues)
+      await GlobalStore.actions.myCollection.artwork.updateFormValues(filteredFormValues)
+
+      onResultPress()
     } catch (error) {
       console.error("Couldn't load artwork data", error)
     }
   }
 
   return (
-    <>
-      {!!artwork ? (
-        <>
-          <Text variant="xs">ARTWORK</Text>
-          <Spacer mt={0.5} />
-          <Flex flexDirection="row" alignItems="center">
-            <Text>{artwork?.title}</Text>
-            <Spacer ml="1" />
-            <Flex flex={1}>
-              <Button
-                variant="fillGray"
-                size="small"
-                onPress={() => {
-                  setArtwork(null)
-                }}
-              >
-                Remove
-              </Button>
-            </Flex>
-          </Flex>
-        </>
-      ) : (
-        <SearchContext.Provider value={searchProviderValues}>
-          <Box>
-            <Input
-              title="ARTWORK"
-              placeholder="Search artworks"
-              icon={<SearchIcon width={18} height={18} />}
-              onChangeText={(value) => {
-                setIsFocused(true)
-                setArtworkQuery(value)
+    <SearchContext.Provider value={searchProviderValues}>
+      <Input
+        placeholder="Search artworks"
+        icon={<SearchIcon width={18} height={18} />}
+        onChangeText={(value) => {
+          setArtworkQuery(value)
+        }}
+        onBlur={formik.handleBlur("artwork")}
+        value={artworkQuery}
+        enableClearButton
+      />
+
+      <Box height="100%">
+        {artworkQuery.length >= 2 && (
+          <Flex mb={2}>
+            <ArtworkAutosuggestResultsQueryRenderer
+              keyword={artworkQuery}
+              artistSlug={artistSlug}
+              onPress={(artworkResult) => {
+                setArtwork(artworkResult)
+                updateForm(artworkResult.internalID)
               }}
-              onBlur={formik.handleBlur("artwork")}
-              onFocus={() => setIsFocused(true)}
-              value={artworkQuery}
-              enableClearButton
             />
 
-            {!!showArtworkAutosuggestResults && (
-              <Box height="100%">
-                <ArtworkAutosuggestResultsQueryRenderer
-                  keyword={artworkQuery}
-                  artistSlug={artistSlug}
-                  onPress={(artworkResult) => {
-                    setArtwork(artworkResult)
-                    updateForm(artworkResult.internalID)
-                    setIsFocused(false)
-                  }}
-                />
-              </Box>
-            )}
-          </Box>
-        </SearchContext.Provider>
-      )}
-    </>
+            <Button variant="outline" onPress={undefined} mt={4}>
+              Don't see your artwork? Skip ahead
+            </Button>
+          </Flex>
+        )}
+      </Box>
+    </SearchContext.Provider>
   )
 }
 
