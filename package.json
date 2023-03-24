@@ -97,7 +97,7 @@
   },
   "dependencies": {
     "@artsy/cohesion": "4.119.0",
-    "@artsy/palette-tokens": "2.6.0",
+    "@artsy/palette-tokens": "4.0.1",
     "@artsy/to-title-case": "1.1.0",
     "@expo/react-native-action-sheet": "3.8.0",
     "@invertase/react-native-apple-authentication": "2.1.5",
